@@ -24,8 +24,8 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 47,
-  "iteration": 1706082681884,
+  "id": 2,
+  "iteration": 1712128464675,
   "links": [],
   "liveNow": false,
   "panels": [
@@ -1458,14 +1458,344 @@
         "x": 0,
         "y": 23
       },
-      "id": 45,
+      "id": 107,
       "panels": [
         {
           "datasource": {
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "description": "The information about CPU usage.",
+          "description": "Information about Oracle system change numbers.",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "custom": {
+                "align": "auto",
+                "displayMode": "auto"
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green"
+                  }
+                ]
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "SCN freezes N times"
+                },
+                "properties": [
+                  {
+                    "id": "thresholds",
+                    "value": {
+                      "mode": "absolute",
+                      "steps": [
+                        {
+                          "color": "transparent"
+                        },
+                        {
+                          "color": "green",
+                          "value": 1
+                        },
+                        {
+                          "color": "yellow",
+                          "value": 5
+                        },
+                        {
+                          "color": "orange",
+                          "value": 10
+                        },
+                        {
+                          "color": "red",
+                          "value": 20
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "id": "custom.displayMode",
+                    "value": "color-background-solid"
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 24,
+            "x": 0,
+            "y": 24
+          },
+          "id": 101,
+          "options": {
+            "footer": {
+              "fields": "",
+              "reducer": [
+                "sum"
+              ],
+              "show": false
+            },
+            "showHeader": true
+          },
+          "pluginVersion": "8.3.3",
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${datasource}"
+              },
+              "exemplar": true,
+              "expr": "max(debezium_connector_currentscn{job=\"$job\", instance=~\".*$worker.*\", plugin=\"oracle\", context=\"streaming\"}) by (server) > 0",
+              "format": "table",
+              "interval": "",
+              "legendFormat": "",
+              "refId": "A"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${datasource}"
+              },
+              "exemplar": true,
+              "expr": "max(debezium_connector_oldestscn{job=\"$job\", instance=~\".*$worker.*\", plugin=\"oracle\", context=\"streaming\"}) by (server) > 0",
+              "format": "table",
+              "hide": false,
+              "interval": "",
+              "legendFormat": "",
+              "refId": "B"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${datasource}"
+              },
+              "exemplar": true,
+              "expr": "max(debezium_connector_committedscn{job=\"$job\", instance=~\".*$worker.*\", plugin=\"oracle\", context=\"streaming\"}) by (server) > 0",
+              "format": "table",
+              "hide": false,
+              "interval": "",
+              "legendFormat": "",
+              "refId": "C"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${datasource}"
+              },
+              "exemplar": true,
+              "expr": "max(debezium_connector_offsetscn{job=\"$job\", instance=~\".*$worker.*\", plugin=\"oracle\", context=\"streaming\"}) by (server) > 0",
+              "format": "table",
+              "hide": false,
+              "interval": "",
+              "legendFormat": "",
+              "refId": "D"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${datasource}"
+              },
+              "exemplar": true,
+              "expr": "max(debezium_connector_scnfreezecount{job=\"$job\", instance=~\".*$worker.*\", plugin=\"oracle\", context=\"streaming\"}) by (server) > 0",
+              "format": "table",
+              "hide": false,
+              "interval": "",
+              "legendFormat": "",
+              "refId": "E"
+            }
+          ],
+          "title": "SCNs",
+          "transformations": [
+            {
+              "id": "seriesToColumns",
+              "options": {
+                "byField": "server"
+              }
+            },
+            {
+              "id": "organize",
+              "options": {
+                "excludeByName": {
+                  "Time 1": true,
+                  "Time 2": true,
+                  "Time 3": true,
+                  "Time 4": true,
+                  "Time 5": true,
+                  "Time 6": true,
+                  "Time 7": true
+                },
+                "indexByName": {},
+                "renameByName": {
+                  "Value #A": "Current SCN",
+                  "Value #B": "Oldest SCN",
+                  "Value #C": "Committed SCN",
+                  "Value #D": "Offset SCN",
+                  "Value #E": "SCN freezes N times",
+                  "server": "Server"
+                }
+              }
+            }
+          ],
+          "type": "table"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "description": "Statistics of connector transaction buffers.",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "custom": {
+                "align": "auto",
+                "displayMode": "auto"
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green"
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 24,
+            "x": 0,
+            "y": 32
+          },
+          "id": 109,
+          "options": {
+            "footer": {
+              "fields": "",
+              "reducer": [
+                "sum"
+              ],
+              "show": false
+            },
+            "showHeader": true
+          },
+          "pluginVersion": "8.3.3",
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${datasource}"
+              },
+              "exemplar": true,
+              "expr": "max(debezium_connector_numberofactivetransactions{job=\"$job\", instance=~\".*$worker.*\", plugin=\"oracle\", context=\"streaming\"}) by (server)",
+              "format": "table",
+              "interval": "",
+              "legendFormat": "",
+              "refId": "A"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${datasource}"
+              },
+              "exemplar": true,
+              "expr": "max(debezium_connector_numberofcommittedtransactions{job=\"$job\", instance=~\".*$worker.*\", plugin=\"oracle\", context=\"streaming\"}) by (server)",
+              "format": "table",
+              "hide": false,
+              "interval": "",
+              "legendFormat": "",
+              "refId": "B"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${datasource}"
+              },
+              "exemplar": true,
+              "expr": "max(debezium_connector_numberofoversizedtransactions{job=\"$job\", instance=~\".*$worker.*\", plugin=\"oracle\", context=\"streaming\"}) by (server)",
+              "format": "table",
+              "hide": false,
+              "interval": "",
+              "legendFormat": "",
+              "refId": "C"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${datasource}"
+              },
+              "exemplar": true,
+              "expr": "max(debezium_connector_numberofrolledbacktransactions{job=\"$job\", instance=~\".*$worker.*\", plugin=\"oracle\", context=\"streaming\"}) by (server)",
+              "format": "table",
+              "hide": false,
+              "interval": "",
+              "legendFormat": "",
+              "refId": "D"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${datasource}"
+              },
+              "exemplar": true,
+              "expr": "max(debezium_connector_committhroughput{job=\"$job\", instance=~\".*$worker.*\", plugin=\"oracle\", context=\"streaming\"}) by (server)",
+              "format": "table",
+              "hide": false,
+              "interval": "",
+              "legendFormat": "",
+              "refId": "E"
+            }
+          ],
+          "title": "Transaction buffers",
+          "transformations": [
+            {
+              "id": "seriesToColumns",
+              "options": {
+                "byField": "server"
+              }
+            },
+            {
+              "id": "organize",
+              "options": {
+                "excludeByName": {
+                  "Time 1": true,
+                  "Time 2": true,
+                  "Time 3": true,
+                  "Time 4": true,
+                  "Time 5": true,
+                  "Time 6": true,
+                  "Time 7": true
+                },
+                "indexByName": {},
+                "renameByName": {
+                  "Value #A": "Active transactions",
+                  "Value #B": "Committed transactions",
+                  "Value #C": "Oversized transactions",
+                  "Value #D": "Rolledback transactions",
+                  "Value #E": "Commit throughput",
+                  "server": "Server"
+                }
+              }
+            }
+          ],
+          "type": "table"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "description": "The time difference in milliseconds between when a change occurred in the transaction logs and when its added to the transaction buffer.",
           "fieldConfig": {
             "defaults": {
               "color": {
@@ -1507,7 +1837,8 @@
                     "color": "green"
                   }
                 ]
-              }
+              },
+              "unit": "ms"
             },
             "overrides": []
           },
@@ -1515,9 +1846,9 @@
             "h": 8,
             "w": 12,
             "x": 0,
-            "y": 24
+            "y": 40
           },
-          "id": 108,
+          "id": 102,
           "options": {
             "legend": {
               "calcs": [
@@ -1537,13 +1868,13 @@
                 "uid": "${datasource}"
               },
               "exemplar": true,
-              "expr": "rate(process_cpu_seconds_total{job=\"$job\", instance=~\".*$worker.*\"}[5m])",
+              "expr": "max(debezium_connector_lagfromsourceinmilliseconds{job=\"$job\", instance=~\".*$worker.*\", plugin=\"oracle\", context=\"streaming\"}) by (server)",
               "interval": "",
-              "legendFormat": "Used",
+              "legendFormat": "{{server}}",
               "refId": "A"
             }
           ],
-          "title": "CPU usage [$worker]",
+          "title": "Lag from database in transaction buffer",
           "type": "timeseries"
         },
         {
@@ -1551,7 +1882,7 @@
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "description": "The information about JVM threads.",
+          "description": "The duration for processing the last LogMiner query batch results in milliseconds.",
           "fieldConfig": {
             "defaults": {
               "color": {
@@ -1593,7 +1924,8 @@
                     "color": "green"
                   }
                 ]
-              }
+              },
+              "unit": "ms"
             },
             "overrides": []
           },
@@ -1601,9 +1933,9 @@
             "h": 8,
             "w": 12,
             "x": 12,
-            "y": 24
+            "y": 40
           },
-          "id": 75,
+          "id": 97,
           "options": {
             "legend": {
               "calcs": [
@@ -1623,9 +1955,9 @@
                 "uid": "${datasource}"
               },
               "exemplar": true,
-              "expr": "jvm_threads_current{job=\"$job\", instance=~\".*$worker.*\"}",
+              "expr": "max(debezium_connector_millisecondtosleepbetweenminingquery{job=\"$job\", instance=~\".*$worker.*\", plugin=\"oracle\", context=\"streaming\"}) by (server)",
               "interval": "",
-              "legendFormat": "Total threads",
+              "legendFormat": "sleep between mining query [server={{server}}]",
               "refId": "A"
             },
             {
@@ -1634,10 +1966,10 @@
                 "uid": "${datasource}"
               },
               "exemplar": true,
-              "expr": "jvm_threads_daemon{job=\"$job\", instance=~\".*$worker.*\"}",
+              "expr": "max(debezium_connector_lastminingsessionstarttimeinmilliseconds{job=\"$job\", instance=~\".*$worker.*\", plugin=\"oracle\", context=\"streaming\"}) by (server)",
               "hide": false,
               "interval": "",
-              "legendFormat": "Daemon threads",
+              "legendFormat": "start mining session [server={{server}}]",
               "refId": "B"
             },
             {
@@ -1646,98 +1978,11 @@
                 "uid": "${datasource}"
               },
               "exemplar": true,
-              "expr": "jvm_threads_deadlocked{job=\"$job\", instance=~\".*$worker.*\"}",
+              "expr": "max(debezium_connector_lastdurationoffetchqueryinmilliseconds{job=\"$job\", instance=~\".*$worker.*\", plugin=\"oracle\", context=\"streaming\"}) by (server)",
               "hide": false,
               "interval": "",
-              "legendFormat": "Deadlocked threads",
+              "legendFormat": "fetch query [server={{server}}]",
               "refId": "C"
-            }
-          ],
-          "title": "Threads [$worker]",
-          "type": "timeseries"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${datasource}"
-          },
-          "description": "The information about JVM heap memory usage.",
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "mode": "palette-classic"
-              },
-              "custom": {
-                "axisLabel": "",
-                "axisPlacement": "auto",
-                "barAlignment": 0,
-                "drawStyle": "line",
-                "fillOpacity": 10,
-                "gradientMode": "none",
-                "hideFrom": {
-                  "legend": false,
-                  "tooltip": false,
-                  "viz": false
-                },
-                "lineInterpolation": "linear",
-                "lineWidth": 1,
-                "pointSize": 5,
-                "scaleDistribution": {
-                  "type": "linear"
-                },
-                "showPoints": "never",
-                "spanNulls": false,
-                "stacking": {
-                  "group": "A",
-                  "mode": "none"
-                },
-                "thresholdsStyle": {
-                  "mode": "off"
-                }
-              },
-              "mappings": [],
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "green"
-                  }
-                ]
-              },
-              "unit": "bytes"
-            },
-            "overrides": []
-          },
-          "gridPos": {
-            "h": 8,
-            "w": 12,
-            "x": 0,
-            "y": 32
-          },
-          "id": 70,
-          "options": {
-            "legend": {
-              "calcs": [
-                "last"
-              ],
-              "displayMode": "table",
-              "placement": "bottom"
-            },
-            "tooltip": {
-              "mode": "single"
-            }
-          },
-          "targets": [
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${datasource}"
-              },
-              "exemplar": true,
-              "expr": "jvm_memory_bytes_used{area=\"heap\", job=\"$job\", instance=~\".*$worker.*\"}",
-              "interval": "",
-              "legendFormat": "Used",
-              "refId": "A"
             },
             {
               "datasource": {
@@ -1745,14 +1990,26 @@
                 "uid": "${datasource}"
               },
               "exemplar": true,
-              "expr": "jvm_memory_bytes_max{area=\"heap\", job=\"$job\", instance=~\".*$worker.*\"}",
+              "expr": "idelta(debezium_connector_totalresultsetnexttimeinmilliseconds{job=\"$job\", instance=~\".*$worker.*\", plugin=\"oracle\", context=\"streaming\"}[5m]) >= 0",
               "hide": false,
               "interval": "",
-              "legendFormat": "Limit",
-              "refId": "B"
+              "legendFormat": "result set next [server={{server}}]",
+              "refId": "D"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${datasource}"
+              },
+              "exemplar": true,
+              "expr": "max(debezium_connector_lastbatchprocessingtimeinmilliseconds{job=\"$job\", instance=~\".*$worker.*\", plugin=\"oracle\", context=\"streaming\"}) by (server)",
+              "hide": false,
+              "interval": "",
+              "legendFormat": "batch processing [server={{server}}]",
+              "refId": "E"
             }
           ],
-          "title": "Heap memory usage [$worker]",
+          "title": "Mining batch time",
           "type": "timeseries"
         },
         {
@@ -1760,7 +2017,7 @@
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "description": "The number of garbage collections triggered per second.",
+          "description": "The number of rows processed per second.",
           "fieldConfig": {
             "defaults": {
               "color": {
@@ -1810,314 +2067,10 @@
           "gridPos": {
             "h": 8,
             "w": 12,
-            "x": 12,
-            "y": 32
-          },
-          "id": 78,
-          "options": {
-            "legend": {
-              "calcs": [
-                "last"
-              ],
-              "displayMode": "table",
-              "placement": "bottom"
-            },
-            "tooltip": {
-              "mode": "single"
-            }
-          },
-          "targets": [
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${datasource}"
-              },
-              "exemplar": true,
-              "expr": "rate(jvm_gc_collection_seconds_count{job=\"$job\", instance=~\".*$worker.*\"}[5m])",
-              "interval": "",
-              "legendFormat": "{{gc}}",
-              "refId": "A"
-            }
-          ],
-          "title": "Garbage collections triggered per second [$worker]",
-          "type": "timeseries"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${datasource}"
-          },
-          "description": "The information about JVM heap memory usage in percent (%).",
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "mode": "palette-classic"
-              },
-              "custom": {
-                "axisLabel": "",
-                "axisPlacement": "auto",
-                "barAlignment": 0,
-                "drawStyle": "line",
-                "fillOpacity": 10,
-                "gradientMode": "none",
-                "hideFrom": {
-                  "legend": false,
-                  "tooltip": false,
-                  "viz": false
-                },
-                "lineInterpolation": "linear",
-                "lineWidth": 1,
-                "pointSize": 5,
-                "scaleDistribution": {
-                  "type": "linear"
-                },
-                "showPoints": "never",
-                "spanNulls": false,
-                "stacking": {
-                  "group": "A",
-                  "mode": "none"
-                },
-                "thresholdsStyle": {
-                  "mode": "off"
-                }
-              },
-              "mappings": [],
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "green"
-                  }
-                ]
-              },
-              "unit": "percent"
-            },
-            "overrides": []
-          },
-          "gridPos": {
-            "h": 8,
-            "w": 12,
-            "x": 0,
-            "y": 40
-          },
-          "id": 73,
-          "options": {
-            "legend": {
-              "calcs": [
-                "last"
-              ],
-              "displayMode": "table",
-              "placement": "bottom"
-            },
-            "tooltip": {
-              "mode": "single"
-            }
-          },
-          "targets": [
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${datasource}"
-              },
-              "exemplar": true,
-              "expr": "100 * jvm_memory_bytes_used{area=\"heap\", job=\"$job\", instance=~\".*$worker.*\"} / jvm_memory_bytes_max{area=\"heap\", job=\"$job\", instance=~\".*$worker.*\"}",
-              "interval": "",
-              "legendFormat": "Used",
-              "refId": "A"
-            },
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${datasource}"
-              },
-              "exemplar": true,
-              "expr": "100",
-              "hide": false,
-              "interval": "",
-              "legendFormat": "Limit",
-              "refId": "B"
-            }
-          ],
-          "title": "Heap memory usage in percent [$worker]",
-          "type": "timeseries"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${datasource}"
-          },
-          "description": "The time in seconds spent in garbage collection.",
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "mode": "palette-classic"
-              },
-              "custom": {
-                "axisLabel": "",
-                "axisPlacement": "auto",
-                "barAlignment": 0,
-                "drawStyle": "line",
-                "fillOpacity": 10,
-                "gradientMode": "none",
-                "hideFrom": {
-                  "legend": false,
-                  "tooltip": false,
-                  "viz": false
-                },
-                "lineInterpolation": "linear",
-                "lineWidth": 1,
-                "pointSize": 5,
-                "scaleDistribution": {
-                  "type": "linear"
-                },
-                "showPoints": "never",
-                "spanNulls": false,
-                "stacking": {
-                  "group": "A",
-                  "mode": "none"
-                },
-                "thresholdsStyle": {
-                  "mode": "off"
-                }
-              },
-              "mappings": [],
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "green"
-                  }
-                ]
-              },
-              "unit": "s"
-            },
-            "overrides": []
-          },
-          "gridPos": {
-            "h": 8,
-            "w": 12,
-            "x": 12,
-            "y": 40
-          },
-          "id": 79,
-          "options": {
-            "legend": {
-              "calcs": [
-                "last"
-              ],
-              "displayMode": "table",
-              "placement": "bottom"
-            },
-            "tooltip": {
-              "mode": "single"
-            }
-          },
-          "targets": [
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${datasource}"
-              },
-              "exemplar": true,
-              "expr": "rate(jvm_gc_collection_seconds_sum{job=\"$job\", instance=~\".*$worker.*\"}[5m])",
-              "interval": "",
-              "legendFormat": "{{gc}}",
-              "refId": "A"
-            }
-          ],
-          "title": "Time spent in garbage collection [$worker]",
-          "type": "timeseries"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${datasource}"
-          },
-          "description": "The average number of incoming/outgoing bytes per second.",
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "mode": "palette-classic"
-              },
-              "custom": {
-                "axisLabel": "",
-                "axisPlacement": "auto",
-                "barAlignment": 0,
-                "drawStyle": "line",
-                "fillOpacity": 10,
-                "gradientMode": "none",
-                "hideFrom": {
-                  "legend": false,
-                  "tooltip": false,
-                  "viz": false
-                },
-                "lineInterpolation": "linear",
-                "lineWidth": 1,
-                "pointSize": 5,
-                "scaleDistribution": {
-                  "type": "linear"
-                },
-                "showPoints": "never",
-                "spanNulls": false,
-                "stacking": {
-                  "group": "A",
-                  "mode": "none"
-                },
-                "thresholdsStyle": {
-                  "mode": "off"
-                }
-              },
-              "mappings": [],
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "green"
-                  }
-                ]
-              },
-              "unit": "binBps"
-            },
-            "overrides": [
-              {
-                "matcher": {
-                  "id": "byName",
-                  "options": "in"
-                },
-                "properties": [
-                  {
-                    "id": "color",
-                    "value": {
-                      "fixedColor": "green",
-                      "mode": "fixed"
-                    }
-                  }
-                ]
-              },
-              {
-                "matcher": {
-                  "id": "byName",
-                  "options": "out"
-                },
-                "properties": [
-                  {
-                    "id": "color",
-                    "value": {
-                      "fixedColor": "yellow",
-                      "mode": "fixed"
-                    }
-                  }
-                ]
-              }
-            ]
-          },
-          "gridPos": {
-            "h": 8,
-            "w": 12,
             "x": 0,
             "y": 48
           },
-          "id": 64,
+          "id": 110,
           "options": {
             "legend": {
               "calcs": [
@@ -2137,9 +2090,182 @@
                 "uid": "${datasource}"
               },
               "exemplar": true,
-              "expr": "rate(kafka_connect_incoming_byte_total{job=\"$job\", instance=~\".*$worker.*\"}[5m])",
+              "expr": "rate(debezium_connector_totalprocessedrows{job=\"$job\", instance=~\".*$worker.*\", plugin=\"oracle\", context=\"streaming\"}[5m])",
               "interval": "",
-              "legendFormat": "in",
+              "legendFormat": "{{server}}",
+              "refId": "A"
+            }
+          ],
+          "title": "Processed rows per second",
+          "type": "timeseries"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "description": "The number of entries fetched by the log mining query per database round-trip.",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 10,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green"
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 12,
+            "y": 48
+          },
+          "id": 99,
+          "options": {
+            "legend": {
+              "calcs": [
+                "last"
+              ],
+              "displayMode": "table",
+              "placement": "bottom"
+            },
+            "tooltip": {
+              "mode": "single"
+            }
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${datasource}"
+              },
+              "exemplar": true,
+              "expr": "max(debezium_connector_batchsize{job=\"$job\", instance=~\".*$worker.*\", plugin=\"oracle\", context=\"streaming\"}) by (server)",
+              "interval": "",
+              "legendFormat": "{{server}}",
+              "refId": "A"
+            }
+          ],
+          "title": "Mining batch size",
+          "type": "timeseries"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "description": "The current mining session’s user/process global area (UGA/PGA) memory consumption in bytes.",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 10,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green"
+                  }
+                ]
+              },
+              "unit": "bytes"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 12,
+            "y": 56
+          },
+          "id": 96,
+          "options": {
+            "legend": {
+              "calcs": [
+                "last"
+              ],
+              "displayMode": "table",
+              "placement": "bottom"
+            },
+            "tooltip": {
+              "mode": "single"
+            }
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${datasource}"
+              },
+              "exemplar": true,
+              "expr": "max(debezium_connector_miningsessionuserglobalareamemoryinbytes{job=\"$job\", instance=~\".*$worker.*\", plugin=\"oracle\", context=\"streaming\"}) by (server)",
+              "interval": "",
+              "legendFormat": "UGA: {{server}}",
               "refId": "A"
             },
             {
@@ -2148,19 +2274,18 @@
                 "uid": "${datasource}"
               },
               "exemplar": true,
-              "expr": "rate(kafka_connect_outgoing_byte_total{job=\"$job\", instance=~\".*$worker.*\"}[5m])",
+              "expr": "max(debezium_connector_miningsessionprocessglobalareamemoryinbytes{job=\"$job\", instance=~\".*$worker.*\", plugin=\"oracle\", context=\"streaming\"}) by (server)",
               "hide": false,
               "interval": "",
-              "legendFormat": "out",
+              "legendFormat": "PGA: {{server}}",
               "refId": "B"
             }
           ],
-          "title": "Incoming/outgoing bytes per second [$worker]",
+          "title": "Mining session consumption",
           "type": "timeseries"
         }
       ],
-      "repeat": "worker",
-      "title": "Worker: $worker",
+      "title": "Debezium Oracle Connector",
       "type": "row"
     },
     {
@@ -2170,6 +2295,1023 @@
         "w": 24,
         "x": 0,
         "y": 24
+      },
+      "id": 30,
+      "panels": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "description": "Statistics of Debezium connectors.",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "custom": {
+                "align": "auto",
+                "displayMode": "auto"
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green"
+                  }
+                ]
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Connected"
+                },
+                "properties": [
+                  {
+                    "id": "mappings",
+                    "value": [
+                      {
+                        "options": {
+                          "0": {
+                            "color": "red",
+                            "index": 0,
+                            "text": "No"
+                          },
+                          "1": {
+                            "color": "green",
+                            "index": 1,
+                            "text": "Yes"
+                          }
+                        },
+                        "type": "value"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "custom.displayMode",
+                    "value": "color-background-solid"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Time since last snapshot event"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "ms"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Time since last streaming event"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "ms"
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 24,
+            "x": 0,
+            "y": 25
+          },
+          "id": 94,
+          "options": {
+            "footer": {
+              "fields": "",
+              "reducer": [
+                "sum"
+              ],
+              "show": false
+            },
+            "showHeader": true
+          },
+          "pluginVersion": "8.3.3",
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${datasource}"
+              },
+              "exemplar": true,
+              "expr": "min(debezium_connector_connected{job=\"$job\", instance=~\".*$worker.*\"}) by (server)",
+              "format": "table",
+              "hide": false,
+              "interval": "",
+              "legendFormat": "",
+              "refId": "A"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${datasource}"
+              },
+              "exemplar": true,
+              "expr": "max(debezium_connector_millisecondssincelastevent{job=\"$job\", instance=~\".*$worker.*\", context=\"snapshot\"} >= 0) by (server)",
+              "format": "table",
+              "interval": "",
+              "legendFormat": "",
+              "refId": "B"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${datasource}"
+              },
+              "exemplar": true,
+              "expr": "max(debezium_connector_millisecondssincelastevent{job=\"$job\", instance=~\".*$worker.*\", context=\"streaming\"} >= 0) by (server)",
+              "format": "table",
+              "hide": false,
+              "interval": "",
+              "legendFormat": "",
+              "refId": "C"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${datasource}"
+              },
+              "exemplar": true,
+              "expr": "sum(debezium_connector_totalnumberofeventsseen{job=\"$job\", instance=~\".*$worker.*\"}) by (server)",
+              "format": "table",
+              "hide": false,
+              "interval": "",
+              "legendFormat": "",
+              "refId": "D"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${datasource}"
+              },
+              "exemplar": true,
+              "expr": "sum(debezium_connector_totalnumberofcreateeventsseen{job=\"$job\", instance=~\".*$worker.*\"}) by (server)",
+              "format": "table",
+              "hide": false,
+              "interval": "",
+              "legendFormat": "",
+              "refId": "E"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${datasource}"
+              },
+              "exemplar": true,
+              "expr": "sum(debezium_connector_totalnumberofupdateeventsseen{job=\"$job\", instance=~\".*$worker.*\"}) by (server)",
+              "format": "table",
+              "hide": false,
+              "interval": "",
+              "legendFormat": "",
+              "refId": "F"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${datasource}"
+              },
+              "exemplar": true,
+              "expr": "sum(debezium_connector_totalnumberofdeleteeventsseen{job=\"$job\", instance=~\".*$worker.*\"}) by (server)",
+              "format": "table",
+              "hide": false,
+              "interval": "",
+              "legendFormat": "",
+              "refId": "G"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${datasource}"
+              },
+              "exemplar": true,
+              "expr": "sum(debezium_connector_numberofeventsfiltered{job=\"$job\", instance=~\".*$worker.*\"}) by (server)",
+              "format": "table",
+              "hide": false,
+              "interval": "",
+              "legendFormat": "",
+              "refId": "H"
+            }
+          ],
+          "title": "Connectors",
+          "transformations": [
+            {
+              "id": "seriesToColumns",
+              "options": {
+                "byField": "server"
+              }
+            },
+            {
+              "id": "organize",
+              "options": {
+                "excludeByName": {
+                  "Time 1": true,
+                  "Time 2": true,
+                  "Time 3": true,
+                  "Time 4": true,
+                  "Time 5": true,
+                  "Time 6": true,
+                  "Time 7": true,
+                  "Time 8": true
+                },
+                "indexByName": {},
+                "renameByName": {
+                  "Value #A": "Connected",
+                  "Value #B": "Time since last snapshot event",
+                  "Value #C": "Time since last streaming event",
+                  "Value #D": "Total events",
+                  "Value #E": "Create events",
+                  "Value #F": "Update events",
+                  "Value #G": "Delete events",
+                  "Value #H": "Filtered events",
+                  "server": "Server"
+                }
+              }
+            }
+          ],
+          "type": "table"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "description": "The status of Debezium connector snapshots.",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "custom": {
+                "align": "auto",
+                "displayMode": "auto"
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green"
+                  }
+                ]
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Total tables"
+                },
+                "properties": [
+                  {
+                    "id": "thresholds",
+                    "value": {
+                      "mode": "absolute",
+                      "steps": [
+                        {
+                          "color": "#808080"
+                        },
+                        {
+                          "color": "green",
+                          "value": 1
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "id": "custom.displayMode",
+                    "value": "color-background-solid"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Remaining tables"
+                },
+                "properties": [
+                  {
+                    "id": "thresholds",
+                    "value": {
+                      "mode": "absolute",
+                      "steps": [
+                        {
+                          "color": "#808080"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "id": "custom.displayMode",
+                    "value": "color-background-solid"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Running"
+                },
+                "properties": [
+                  {
+                    "id": "mappings",
+                    "value": [
+                      {
+                        "options": {
+                          "0": {
+                            "color": "#808080",
+                            "index": 0,
+                            "text": "No"
+                          },
+                          "1": {
+                            "color": "green",
+                            "index": 1,
+                            "text": "Yes"
+                          }
+                        },
+                        "type": "value"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "custom.displayMode",
+                    "value": "color-background-solid"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Paused"
+                },
+                "properties": [
+                  {
+                    "id": "mappings",
+                    "value": [
+                      {
+                        "options": {
+                          "0": {
+                            "color": "#808080",
+                            "index": 0,
+                            "text": "No"
+                          },
+                          "1": {
+                            "color": "yellow",
+                            "index": 1,
+                            "text": "Yes"
+                          }
+                        },
+                        "type": "value"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "custom.displayMode",
+                    "value": "color-background-solid"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Aborted"
+                },
+                "properties": [
+                  {
+                    "id": "mappings",
+                    "value": [
+                      {
+                        "options": {
+                          "0": {
+                            "color": "#808080",
+                            "index": 0,
+                            "text": "No"
+                          },
+                          "1": {
+                            "color": "red",
+                            "index": 1,
+                            "text": "Yes"
+                          }
+                        },
+                        "type": "value"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "custom.displayMode",
+                    "value": "color-background-solid"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Completed"
+                },
+                "properties": [
+                  {
+                    "id": "mappings",
+                    "value": [
+                      {
+                        "options": {
+                          "0": {
+                            "color": "#808080",
+                            "index": 0,
+                            "text": "No"
+                          },
+                          "1": {
+                            "color": "green",
+                            "index": 1,
+                            "text": "Yes"
+                          }
+                        },
+                        "type": "value"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "custom.displayMode",
+                    "value": "color-background-solid"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Duration"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "s"
+                  },
+                  {
+                    "id": "thresholds",
+                    "value": {
+                      "mode": "absolute",
+                      "steps": [
+                        {
+                          "color": "#808080"
+                        },
+                        {
+                          "color": "green",
+                          "value": 1
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "id": "custom.displayMode",
+                    "value": "color-background-solid"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Paused duration"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "s"
+                  },
+                  {
+                    "id": "thresholds",
+                    "value": {
+                      "mode": "absolute",
+                      "steps": [
+                        {
+                          "color": "#808080"
+                        },
+                        {
+                          "color": "yellow",
+                          "value": 1
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "id": "custom.displayMode",
+                    "value": "color-background-solid"
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 24,
+            "x": 0,
+            "y": 33
+          },
+          "id": 51,
+          "options": {
+            "footer": {
+              "fields": "",
+              "reducer": [
+                "sum"
+              ],
+              "show": false
+            },
+            "showHeader": true,
+            "sortBy": []
+          },
+          "pluginVersion": "8.3.3",
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${datasource}"
+              },
+              "exemplar": true,
+              "expr": "min(debezium_connector_totaltablecount{job=\"$job\", instance=~\".*$worker.*\", context=\"snapshot\"}) by (server)",
+              "format": "table",
+              "hide": false,
+              "interval": "",
+              "legendFormat": "",
+              "refId": "A"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${datasource}"
+              },
+              "exemplar": true,
+              "expr": "min(debezium_connector_remainingtablecount{job=\"$job\", instance=~\".*$worker.*\", context=\"snapshot\"}) by (server)",
+              "format": "table",
+              "hide": false,
+              "interval": "",
+              "legendFormat": "",
+              "refId": "B"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${datasource}"
+              },
+              "exemplar": true,
+              "expr": "min(debezium_connector_snapshotrunning{job=\"$job\", instance=~\".*$worker.*\", context=\"snapshot\"}) by (server)",
+              "format": "table",
+              "hide": false,
+              "interval": "",
+              "legendFormat": "",
+              "refId": "C"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${datasource}"
+              },
+              "exemplar": true,
+              "expr": "max(debezium_connector_snapshotpaused{job=\"$job\", instance=~\".*$worker.*\", context=\"snapshot\"}) by (server)",
+              "format": "table",
+              "hide": false,
+              "interval": "",
+              "legendFormat": "",
+              "refId": "D"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${datasource}"
+              },
+              "exemplar": true,
+              "expr": "max(debezium_connector_snapshotaborted{job=\"$job\", instance=~\".*$worker.*\", context=\"snapshot\"}) by (server)",
+              "format": "table",
+              "hide": false,
+              "interval": "",
+              "legendFormat": "",
+              "refId": "E"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${datasource}"
+              },
+              "exemplar": true,
+              "expr": "min(debezium_connector_snapshotcompleted{job=\"$job\", instance=~\".*$worker.*\", context=\"snapshot\"}) by (server)",
+              "format": "table",
+              "hide": false,
+              "interval": "",
+              "legendFormat": "",
+              "refId": "F"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${datasource}"
+              },
+              "exemplar": true,
+              "expr": "max(debezium_connector_snapshotdurationinseconds{job=\"$job\", instance=~\".*$worker.*\", context=\"snapshot\"}) by (server)",
+              "format": "table",
+              "hide": false,
+              "interval": "",
+              "legendFormat": "",
+              "refId": "G"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${datasource}"
+              },
+              "exemplar": true,
+              "expr": "max(debezium_connector_snapshotpauseddurationinseconds{job=\"$job\", instance=~\".*$worker.*\", context=\"snapshot\"}) by (server)",
+              "format": "table",
+              "hide": false,
+              "interval": "",
+              "legendFormat": "",
+              "refId": "H"
+            }
+          ],
+          "title": "Snapshot status",
+          "transformations": [
+            {
+              "id": "seriesToColumns",
+              "options": {
+                "byField": "server"
+              }
+            },
+            {
+              "id": "organize",
+              "options": {
+                "excludeByName": {
+                  "Time": true,
+                  "Time 1": true,
+                  "Time 2": true,
+                  "Time 3": true,
+                  "Time 4": true,
+                  "Time 5": true,
+                  "Time 6": true,
+                  "Time 7": true,
+                  "Time 8": true,
+                  "Value #E": false,
+                  "__name__ 1": true,
+                  "__name__ 2": true,
+                  "__name__ 3": true,
+                  "__name__ 4": true,
+                  "__name__ 5": true,
+                  "__name__ 6": true,
+                  "__name__ 7": true,
+                  "__name__ 8": true,
+                  "instance 1": true,
+                  "instance 2": true,
+                  "instance 3": true,
+                  "instance 4": true,
+                  "instance 5": true,
+                  "instance 6": true,
+                  "instance 7": true,
+                  "instance 8": true,
+                  "job 1": true,
+                  "job 2": true,
+                  "job 3": true,
+                  "job 4": true,
+                  "job 5": true,
+                  "job 6": true,
+                  "job 7": true,
+                  "job 8": true,
+                  "plugin 1": true,
+                  "plugin 2": true,
+                  "plugin 3": true,
+                  "plugin 4": true,
+                  "plugin 5": true,
+                  "plugin 6": true,
+                  "plugin 7": true,
+                  "plugin 8": true,
+                  "task 1": true,
+                  "task 2": true,
+                  "task 3": true,
+                  "task 4": true,
+                  "task 5": true,
+                  "task 6": true,
+                  "task 7": true,
+                  "task 8": true
+                },
+                "indexByName": {},
+                "renameByName": {
+                  "Value #A": "Total tables",
+                  "Value #B": "Remaining tables",
+                  "Value #C": "Running",
+                  "Value #D": "Paused",
+                  "Value #E": "Aborted",
+                  "Value #F": "Completed",
+                  "Value #G": "Duration",
+                  "Value #H": "Paused duration",
+                  "server": "Server"
+                }
+              }
+            }
+          ],
+          "type": "table"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "description": "The current size of the poll queue.",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 10,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green"
+                  }
+                ]
+              },
+              "unit": "short"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 0,
+            "y": 41
+          },
+          "id": 41,
+          "options": {
+            "legend": {
+              "calcs": [
+                "last"
+              ],
+              "displayMode": "table",
+              "placement": "bottom"
+            },
+            "tooltip": {
+              "mode": "single"
+            }
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${datasource}"
+              },
+              "exemplar": true,
+              "expr": "max(debezium_connector_queuetotalcapacity{job=\"$job\", instance=~\".*$worker.*\"}) by (server)",
+              "interval": "",
+              "legendFormat": "Limit: {{server}}",
+              "refId": "A"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${datasource}"
+              },
+              "exemplar": true,
+              "expr": "max(debezium_connector_queuetotalcapacity{job=\"$job\", instance=~\".*$worker.*\"}-debezium_connector_queueremainingcapacity{job=\"$job\", instance=~\".*$worker.*\"}) by (server, task)",
+              "hide": false,
+              "interval": "",
+              "legendFormat": "Used: {{server}}-{{task}}",
+              "refId": "B"
+            }
+          ],
+          "title": "Source record poll queue size",
+          "type": "timeseries"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "description": "The current size of the poll queue in bytes.",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 10,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green"
+                  }
+                ]
+              },
+              "unit": "bytes"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 12,
+            "y": 41
+          },
+          "id": 43,
+          "options": {
+            "legend": {
+              "calcs": [
+                "last"
+              ],
+              "displayMode": "table",
+              "placement": "bottom"
+            },
+            "tooltip": {
+              "mode": "single"
+            }
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${datasource}"
+              },
+              "exemplar": true,
+              "expr": "max(debezium_connector_maxqueuesizeinbytes{job=\"$job\", instance=~\".*$worker.*\"}) by (server)",
+              "hide": false,
+              "interval": "",
+              "legendFormat": "Limit: {{server}}",
+              "refId": "A"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${datasource}"
+              },
+              "exemplar": true,
+              "expr": "max(debezium_connector_currentqueuesizeinbytes{job=\"$job\", instance=~\".*$worker.*\"}) by (server, task)",
+              "interval": "",
+              "legendFormat": "Used: {{server}}-{{task}}",
+              "refId": "B"
+            }
+          ],
+          "title": "Source record poll queue size in bytes",
+          "type": "timeseries"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "description": "The number of milliseconds between the last change event’s timestamp and the connector processing it. The values will incoporate any differences between the clocks on the machines where the database server and the connector are running.",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 10,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green"
+                  }
+                ]
+              },
+              "unit": "ms"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 0,
+            "y": 49
+          },
+          "id": 103,
+          "options": {
+            "legend": {
+              "calcs": [
+                "last"
+              ],
+              "displayMode": "table",
+              "placement": "bottom"
+            },
+            "tooltip": {
+              "mode": "single"
+            }
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${datasource}"
+              },
+              "exemplar": true,
+              "expr": "max(debezium_connector_millisecondsbehindsource{job=\"$job\", instance=~\".*$worker.*\"}) by (server, task) > 0",
+              "interval": "",
+              "legendFormat": "{{server}}-{{task}}",
+              "refId": "A"
+            }
+          ],
+          "title": "Time behind source event",
+          "type": "timeseries"
+        }
+      ],
+      "title": "Debezium Connector",
+      "type": "row"
+    },
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 25
       },
       "id": 89,
       "panels": [
@@ -2887,7 +4029,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 25
+        "y": 26
       },
       "id": 18,
       "panels": [
@@ -3299,7 +4441,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 26
+        "y": 27
       },
       "id": 85,
       "panels": [
@@ -3604,7 +4746,7 @@
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "description": "The lag in terms of number of records by partitions. An increasing value over time is your best indication that the consumer group is not keeping up with the producers.",
+          "description": "The lag in terms of number of records by clients. An increasing value over time is your best indication that the consumer group is not keeping up with the producers.",
           "fieldConfig": {
             "defaults": {
               "color": {
@@ -3699,7 +4841,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 27
+        "y": 28
       },
       "id": 20,
       "panels": [
@@ -4069,734 +5211,16 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 28
+        "y": 29
       },
-      "id": 30,
+      "id": 45,
       "panels": [
         {
           "datasource": {
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "description": "Statistics of Debezium connectors.",
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "mode": "thresholds"
-              },
-              "custom": {
-                "align": "auto",
-                "displayMode": "auto"
-              },
-              "mappings": [],
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "green"
-                  }
-                ]
-              }
-            },
-            "overrides": [
-              {
-                "matcher": {
-                  "id": "byName",
-                  "options": "Connected"
-                },
-                "properties": [
-                  {
-                    "id": "mappings",
-                    "value": [
-                      {
-                        "options": {
-                          "0": {
-                            "color": "red",
-                            "index": 0,
-                            "text": "No"
-                          },
-                          "1": {
-                            "color": "green",
-                            "index": 1,
-                            "text": "Yes"
-                          }
-                        },
-                        "type": "value"
-                      }
-                    ]
-                  },
-                  {
-                    "id": "custom.displayMode",
-                    "value": "color-background-solid"
-                  }
-                ]
-              },
-              {
-                "matcher": {
-                  "id": "byName",
-                  "options": "Time since last snapshot event"
-                },
-                "properties": [
-                  {
-                    "id": "unit",
-                    "value": "ms"
-                  }
-                ]
-              },
-              {
-                "matcher": {
-                  "id": "byName",
-                  "options": "Time since last streaming event"
-                },
-                "properties": [
-                  {
-                    "id": "unit",
-                    "value": "ms"
-                  }
-                ]
-              }
-            ]
-          },
-          "gridPos": {
-            "h": 8,
-            "w": 24,
-            "x": 0,
-            "y": 29
-          },
-          "id": 94,
-          "options": {
-            "footer": {
-              "fields": "",
-              "reducer": [
-                "sum"
-              ],
-              "show": false
-            },
-            "showHeader": true
-          },
-          "pluginVersion": "8.3.3",
-          "targets": [
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${datasource}"
-              },
-              "exemplar": true,
-              "expr": "min(debezium_connector_connected{job=\"$job\", instance=~\".*$worker.*\"}) by (server)",
-              "format": "table",
-              "hide": false,
-              "interval": "",
-              "legendFormat": "",
-              "refId": "A"
-            },
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${datasource}"
-              },
-              "exemplar": true,
-              "expr": "max(debezium_connector_millisecondssincelastevent{job=\"$job\", instance=~\".*$worker.*\", context=\"snapshot\"} >= 0) by (server)",
-              "format": "table",
-              "interval": "",
-              "legendFormat": "",
-              "refId": "B"
-            },
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${datasource}"
-              },
-              "exemplar": true,
-              "expr": "max(debezium_connector_millisecondssincelastevent{job=\"$job\", instance=~\".*$worker.*\", context=\"streaming\"} >= 0) by (server)",
-              "format": "table",
-              "hide": false,
-              "interval": "",
-              "legendFormat": "",
-              "refId": "C"
-            },
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${datasource}"
-              },
-              "exemplar": true,
-              "expr": "sum(debezium_connector_totalnumberofeventsseen{job=\"$job\", instance=~\".*$worker.*\"}) by (server)",
-              "format": "table",
-              "hide": false,
-              "interval": "",
-              "legendFormat": "",
-              "refId": "D"
-            },
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${datasource}"
-              },
-              "exemplar": true,
-              "expr": "sum(debezium_connector_totalnumberofcreateeventsseen{job=\"$job\", instance=~\".*$worker.*\"}) by (server)",
-              "format": "table",
-              "hide": false,
-              "interval": "",
-              "legendFormat": "",
-              "refId": "E"
-            },
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${datasource}"
-              },
-              "exemplar": true,
-              "expr": "sum(debezium_connector_totalnumberofupdateeventsseen{job=\"$job\", instance=~\".*$worker.*\"}) by (server)",
-              "format": "table",
-              "hide": false,
-              "interval": "",
-              "legendFormat": "",
-              "refId": "F"
-            },
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${datasource}"
-              },
-              "exemplar": true,
-              "expr": "sum(debezium_connector_totalnumberofdeleteeventsseen{job=\"$job\", instance=~\".*$worker.*\"}) by (server)",
-              "format": "table",
-              "hide": false,
-              "interval": "",
-              "legendFormat": "",
-              "refId": "G"
-            },
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${datasource}"
-              },
-              "exemplar": true,
-              "expr": "sum(debezium_connector_numberofeventsfiltered{job=\"$job\", instance=~\".*$worker.*\"}) by (server)",
-              "format": "table",
-              "hide": false,
-              "interval": "",
-              "legendFormat": "",
-              "refId": "H"
-            }
-          ],
-          "title": "Connectors",
-          "transformations": [
-            {
-              "id": "seriesToColumns",
-              "options": {
-                "byField": "server"
-              }
-            },
-            {
-              "id": "organize",
-              "options": {
-                "excludeByName": {
-                  "Time 1": true,
-                  "Time 2": true,
-                  "Time 3": true,
-                  "Time 4": true,
-                  "Time 5": true,
-                  "Time 6": true,
-                  "Time 7": true,
-                  "Time 8": true
-                },
-                "indexByName": {},
-                "renameByName": {
-                  "Value #A": "Connected",
-                  "Value #B": "Time since last snapshot event",
-                  "Value #C": "Time since last streaming event",
-                  "Value #D": "Total events",
-                  "Value #E": "Create events",
-                  "Value #F": "Update events",
-                  "Value #G": "Delete events",
-                  "Value #H": "Filtered events",
-                  "server": "Server"
-                }
-              }
-            }
-          ],
-          "type": "table"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${datasource}"
-          },
-          "description": "The status of Debezium connector snapshots.",
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "mode": "thresholds"
-              },
-              "custom": {
-                "align": "auto",
-                "displayMode": "auto"
-              },
-              "mappings": [],
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "green"
-                  }
-                ]
-              }
-            },
-            "overrides": [
-              {
-                "matcher": {
-                  "id": "byName",
-                  "options": "Total tables"
-                },
-                "properties": [
-                  {
-                    "id": "thresholds",
-                    "value": {
-                      "mode": "absolute",
-                      "steps": [
-                        {
-                          "color": "#808080"
-                        },
-                        {
-                          "color": "green",
-                          "value": 1
-                        }
-                      ]
-                    }
-                  },
-                  {
-                    "id": "custom.displayMode",
-                    "value": "color-background-solid"
-                  }
-                ]
-              },
-              {
-                "matcher": {
-                  "id": "byName",
-                  "options": "Remaining tables"
-                },
-                "properties": [
-                  {
-                    "id": "thresholds",
-                    "value": {
-                      "mode": "absolute",
-                      "steps": [
-                        {
-                          "color": "#808080"
-                        }
-                      ]
-                    }
-                  },
-                  {
-                    "id": "custom.displayMode",
-                    "value": "color-background-solid"
-                  }
-                ]
-              },
-              {
-                "matcher": {
-                  "id": "byName",
-                  "options": "Running"
-                },
-                "properties": [
-                  {
-                    "id": "mappings",
-                    "value": [
-                      {
-                        "options": {
-                          "0": {
-                            "color": "#808080",
-                            "index": 0,
-                            "text": "No"
-                          },
-                          "1": {
-                            "color": "green",
-                            "index": 1,
-                            "text": "Yes"
-                          }
-                        },
-                        "type": "value"
-                      }
-                    ]
-                  },
-                  {
-                    "id": "custom.displayMode",
-                    "value": "color-background-solid"
-                  }
-                ]
-              },
-              {
-                "matcher": {
-                  "id": "byName",
-                  "options": "Paused"
-                },
-                "properties": [
-                  {
-                    "id": "mappings",
-                    "value": [
-                      {
-                        "options": {
-                          "0": {
-                            "color": "#808080",
-                            "index": 0,
-                            "text": "No"
-                          },
-                          "1": {
-                            "color": "yellow",
-                            "index": 1,
-                            "text": "Yes"
-                          }
-                        },
-                        "type": "value"
-                      }
-                    ]
-                  },
-                  {
-                    "id": "custom.displayMode",
-                    "value": "color-background-solid"
-                  }
-                ]
-              },
-              {
-                "matcher": {
-                  "id": "byName",
-                  "options": "Aborted"
-                },
-                "properties": [
-                  {
-                    "id": "mappings",
-                    "value": [
-                      {
-                        "options": {
-                          "0": {
-                            "color": "#808080",
-                            "index": 0,
-                            "text": "No"
-                          },
-                          "1": {
-                            "color": "red",
-                            "index": 1,
-                            "text": "Yes"
-                          }
-                        },
-                        "type": "value"
-                      }
-                    ]
-                  },
-                  {
-                    "id": "custom.displayMode",
-                    "value": "color-background-solid"
-                  }
-                ]
-              },
-              {
-                "matcher": {
-                  "id": "byName",
-                  "options": "Completed"
-                },
-                "properties": [
-                  {
-                    "id": "mappings",
-                    "value": [
-                      {
-                        "options": {
-                          "0": {
-                            "color": "#808080",
-                            "index": 0,
-                            "text": "No"
-                          },
-                          "1": {
-                            "color": "green",
-                            "index": 1,
-                            "text": "Yes"
-                          }
-                        },
-                        "type": "value"
-                      }
-                    ]
-                  },
-                  {
-                    "id": "custom.displayMode",
-                    "value": "color-background-solid"
-                  }
-                ]
-              },
-              {
-                "matcher": {
-                  "id": "byName",
-                  "options": "Duration"
-                },
-                "properties": [
-                  {
-                    "id": "unit",
-                    "value": "s"
-                  },
-                  {
-                    "id": "thresholds",
-                    "value": {
-                      "mode": "absolute",
-                      "steps": [
-                        {
-                          "color": "#808080"
-                        },
-                        {
-                          "color": "green",
-                          "value": 1
-                        }
-                      ]
-                    }
-                  },
-                  {
-                    "id": "custom.displayMode",
-                    "value": "color-background-solid"
-                  }
-                ]
-              },
-              {
-                "matcher": {
-                  "id": "byName",
-                  "options": "Paused duration"
-                },
-                "properties": [
-                  {
-                    "id": "unit",
-                    "value": "s"
-                  },
-                  {
-                    "id": "thresholds",
-                    "value": {
-                      "mode": "absolute",
-                      "steps": [
-                        {
-                          "color": "#808080"
-                        },
-                        {
-                          "color": "yellow",
-                          "value": 1
-                        }
-                      ]
-                    }
-                  },
-                  {
-                    "id": "custom.displayMode",
-                    "value": "color-background-solid"
-                  }
-                ]
-              }
-            ]
-          },
-          "gridPos": {
-            "h": 8,
-            "w": 24,
-            "x": 0,
-            "y": 37
-          },
-          "id": 51,
-          "options": {
-            "footer": {
-              "fields": "",
-              "reducer": [
-                "sum"
-              ],
-              "show": false
-            },
-            "showHeader": true,
-            "sortBy": []
-          },
-          "pluginVersion": "8.3.3",
-          "targets": [
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${datasource}"
-              },
-              "exemplar": true,
-              "expr": "min(debezium_connector_totaltablecount{job=\"$job\", instance=~\".*$worker.*\", context=\"snapshot\"}) by (server)",
-              "format": "table",
-              "hide": false,
-              "interval": "",
-              "legendFormat": "",
-              "refId": "A"
-            },
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${datasource}"
-              },
-              "exemplar": true,
-              "expr": "min(debezium_connector_remainingtablecount{job=\"$job\", instance=~\".*$worker.*\", context=\"snapshot\"}) by (server)",
-              "format": "table",
-              "hide": false,
-              "interval": "",
-              "legendFormat": "",
-              "refId": "B"
-            },
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${datasource}"
-              },
-              "exemplar": true,
-              "expr": "min(debezium_connector_snapshotrunning{job=\"$job\", instance=~\".*$worker.*\", context=\"snapshot\"}) by (server)",
-              "format": "table",
-              "hide": false,
-              "interval": "",
-              "legendFormat": "",
-              "refId": "C"
-            },
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${datasource}"
-              },
-              "exemplar": true,
-              "expr": "max(debezium_connector_snapshotpaused{job=\"$job\", instance=~\".*$worker.*\", context=\"snapshot\"}) by (server)",
-              "format": "table",
-              "hide": false,
-              "interval": "",
-              "legendFormat": "",
-              "refId": "D"
-            },
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${datasource}"
-              },
-              "exemplar": true,
-              "expr": "max(debezium_connector_snapshotaborted{job=\"$job\", instance=~\".*$worker.*\", context=\"snapshot\"}) by (server)",
-              "format": "table",
-              "hide": false,
-              "interval": "",
-              "legendFormat": "",
-              "refId": "E"
-            },
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${datasource}"
-              },
-              "exemplar": true,
-              "expr": "min(debezium_connector_snapshotcompleted{job=\"$job\", instance=~\".*$worker.*\", context=\"snapshot\"}) by (server)",
-              "format": "table",
-              "hide": false,
-              "interval": "",
-              "legendFormat": "",
-              "refId": "F"
-            },
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${datasource}"
-              },
-              "exemplar": true,
-              "expr": "max(debezium_connector_snapshotdurationinseconds{job=\"$job\", instance=~\".*$worker.*\", context=\"snapshot\"}) by (server)",
-              "format": "table",
-              "hide": false,
-              "interval": "",
-              "legendFormat": "",
-              "refId": "G"
-            },
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${datasource}"
-              },
-              "exemplar": true,
-              "expr": "max(debezium_connector_snapshotpauseddurationinseconds{job=\"$job\", instance=~\".*$worker.*\", context=\"snapshot\"}) by (server)",
-              "format": "table",
-              "hide": false,
-              "interval": "",
-              "legendFormat": "",
-              "refId": "H"
-            }
-          ],
-          "title": "Snapshot status",
-          "transformations": [
-            {
-              "id": "seriesToColumns",
-              "options": {
-                "byField": "server"
-              }
-            },
-            {
-              "id": "organize",
-              "options": {
-                "excludeByName": {
-                  "Time": true,
-                  "Time 1": true,
-                  "Time 2": true,
-                  "Time 3": true,
-                  "Time 4": true,
-                  "Time 5": true,
-                  "Time 6": true,
-                  "Time 7": true,
-                  "Time 8": true,
-                  "Value #E": false,
-                  "__name__ 1": true,
-                  "__name__ 2": true,
-                  "__name__ 3": true,
-                  "__name__ 4": true,
-                  "__name__ 5": true,
-                  "__name__ 6": true,
-                  "__name__ 7": true,
-                  "__name__ 8": true,
-                  "instance 1": true,
-                  "instance 2": true,
-                  "instance 3": true,
-                  "instance 4": true,
-                  "instance 5": true,
-                  "instance 6": true,
-                  "instance 7": true,
-                  "instance 8": true,
-                  "job 1": true,
-                  "job 2": true,
-                  "job 3": true,
-                  "job 4": true,
-                  "job 5": true,
-                  "job 6": true,
-                  "job 7": true,
-                  "job 8": true,
-                  "plugin 1": true,
-                  "plugin 2": true,
-                  "plugin 3": true,
-                  "plugin 4": true,
-                  "plugin 5": true,
-                  "plugin 6": true,
-                  "plugin 7": true,
-                  "plugin 8": true,
-                  "task 1": true,
-                  "task 2": true,
-                  "task 3": true,
-                  "task 4": true,
-                  "task 5": true,
-                  "task 6": true,
-                  "task 7": true,
-                  "task 8": true
-                },
-                "indexByName": {},
-                "renameByName": {
-                  "Value #A": "Total tables",
-                  "Value #B": "Remaining tables",
-                  "Value #C": "Running",
-                  "Value #D": "Paused",
-                  "Value #E": "Aborted",
-                  "Value #F": "Completed",
-                  "Value #G": "Duration",
-                  "Value #H": "Paused duration",
-                  "server": "Server"
-                }
-              }
-            }
-          ],
-          "type": "table"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${datasource}"
-          },
-          "description": "The current size of the poll queue.",
+          "description": "The information about CPU usage.",
           "fieldConfig": {
             "defaults": {
               "color": {
@@ -4838,8 +5262,7 @@
                     "color": "green"
                   }
                 ]
-              },
-              "unit": "short"
+              }
             },
             "overrides": []
           },
@@ -4847,9 +5270,9 @@
             "h": 8,
             "w": 12,
             "x": 0,
-            "y": 45
+            "y": 30
           },
-          "id": 41,
+          "id": 108,
           "options": {
             "legend": {
               "calcs": [
@@ -4869,9 +5292,95 @@
                 "uid": "${datasource}"
               },
               "exemplar": true,
-              "expr": "max(debezium_connector_queuetotalcapacity{job=\"$job\", instance=~\".*$worker.*\"}) by (server)",
+              "expr": "rate(process_cpu_seconds_total{job=\"$job\", instance=~\".*$worker.*\"}[5m])",
               "interval": "",
-              "legendFormat": "Limit: {{server}}",
+              "legendFormat": "Used",
+              "refId": "A"
+            }
+          ],
+          "title": "CPU usage [$worker]",
+          "type": "timeseries"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "description": "The information about JVM threads.",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 10,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green"
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 12,
+            "y": 30
+          },
+          "id": 75,
+          "options": {
+            "legend": {
+              "calcs": [
+                "last"
+              ],
+              "displayMode": "table",
+              "placement": "bottom"
+            },
+            "tooltip": {
+              "mode": "single"
+            }
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${datasource}"
+              },
+              "exemplar": true,
+              "expr": "jvm_threads_current{job=\"$job\", instance=~\".*$worker.*\"}",
+              "interval": "",
+              "legendFormat": "Total threads",
               "refId": "A"
             },
             {
@@ -4880,14 +5389,26 @@
                 "uid": "${datasource}"
               },
               "exemplar": true,
-              "expr": "max(debezium_connector_queuetotalcapacity{job=\"$job\", instance=~\".*$worker.*\"}-debezium_connector_queueremainingcapacity{job=\"$job\", instance=~\".*$worker.*\"}) by (server, task)",
+              "expr": "jvm_threads_daemon{job=\"$job\", instance=~\".*$worker.*\"}",
               "hide": false,
               "interval": "",
-              "legendFormat": "Used: {{server}}-{{task}}",
+              "legendFormat": "Daemon threads",
               "refId": "B"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${datasource}"
+              },
+              "exemplar": true,
+              "expr": "jvm_threads_deadlocked{job=\"$job\", instance=~\".*$worker.*\"}",
+              "hide": false,
+              "interval": "",
+              "legendFormat": "Deadlocked threads",
+              "refId": "C"
             }
           ],
-          "title": "Source record poll queue size",
+          "title": "Threads [$worker]",
           "type": "timeseries"
         },
         {
@@ -4895,7 +5416,7 @@
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "description": "The current size of the poll queue in bytes.",
+          "description": "The information about JVM heap memory usage.",
           "fieldConfig": {
             "defaults": {
               "color": {
@@ -4945,532 +5466,10 @@
           "gridPos": {
             "h": 8,
             "w": 12,
-            "x": 12,
-            "y": 45
-          },
-          "id": 43,
-          "options": {
-            "legend": {
-              "calcs": [
-                "last"
-              ],
-              "displayMode": "table",
-              "placement": "bottom"
-            },
-            "tooltip": {
-              "mode": "single"
-            }
-          },
-          "targets": [
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${datasource}"
-              },
-              "exemplar": true,
-              "expr": "max(debezium_connector_maxqueuesizeinbytes{job=\"$job\", instance=~\".*$worker.*\"}) by (server)",
-              "hide": false,
-              "interval": "",
-              "legendFormat": "Limit: {{server}}",
-              "refId": "A"
-            },
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${datasource}"
-              },
-              "exemplar": true,
-              "expr": "max(debezium_connector_currentqueuesizeinbytes{job=\"$job\", instance=~\".*$worker.*\"}) by (server, task)",
-              "interval": "",
-              "legendFormat": "Used: {{server}}-{{task}}",
-              "refId": "B"
-            }
-          ],
-          "title": "Source record poll queue size in bytes",
-          "type": "timeseries"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${datasource}"
-          },
-          "description": "The number of milliseconds between the last change event’s timestamp and the connector processing it. The values will incoporate any differences between the clocks on the machines where the database server and the connector are running.",
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "mode": "palette-classic"
-              },
-              "custom": {
-                "axisLabel": "",
-                "axisPlacement": "auto",
-                "barAlignment": 0,
-                "drawStyle": "line",
-                "fillOpacity": 10,
-                "gradientMode": "none",
-                "hideFrom": {
-                  "legend": false,
-                  "tooltip": false,
-                  "viz": false
-                },
-                "lineInterpolation": "linear",
-                "lineWidth": 1,
-                "pointSize": 5,
-                "scaleDistribution": {
-                  "type": "linear"
-                },
-                "showPoints": "never",
-                "spanNulls": false,
-                "stacking": {
-                  "group": "A",
-                  "mode": "none"
-                },
-                "thresholdsStyle": {
-                  "mode": "off"
-                }
-              },
-              "mappings": [],
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "green"
-                  }
-                ]
-              },
-              "unit": "ms"
-            },
-            "overrides": []
-          },
-          "gridPos": {
-            "h": 8,
-            "w": 12,
-            "x": 0,
-            "y": 53
-          },
-          "id": 103,
-          "options": {
-            "legend": {
-              "calcs": [
-                "last"
-              ],
-              "displayMode": "table",
-              "placement": "bottom"
-            },
-            "tooltip": {
-              "mode": "single"
-            }
-          },
-          "targets": [
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${datasource}"
-              },
-              "exemplar": true,
-              "expr": "max(debezium_connector_millisecondsbehindsource{job=\"$job\", instance=~\".*$worker.*\"}) by (server, task) > 0",
-              "interval": "",
-              "legendFormat": "{{server}}-{{task}}",
-              "refId": "A"
-            }
-          ],
-          "title": "Time behind source event",
-          "type": "timeseries"
-        }
-      ],
-      "title": "Debezium Connector",
-      "type": "row"
-    },
-    {
-      "collapsed": true,
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 29
-      },
-      "id": 107,
-      "panels": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${datasource}"
-          },
-          "description": "Statistics of Oracle system change numbers.",
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "mode": "thresholds"
-              },
-              "custom": {
-                "align": "auto",
-                "displayMode": "auto"
-              },
-              "mappings": [],
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "green"
-                  }
-                ]
-              }
-            },
-            "overrides": [
-              {
-                "matcher": {
-                  "id": "byName",
-                  "options": "SCN freezes N times"
-                },
-                "properties": [
-                  {
-                    "id": "thresholds",
-                    "value": {
-                      "mode": "absolute",
-                      "steps": [
-                        {
-                          "color": "green"
-                        },
-                        {
-                          "color": "yellow",
-                          "value": 5
-                        },
-                        {
-                          "color": "orange",
-                          "value": 10
-                        },
-                        {
-                          "color": "red",
-                          "value": 20
-                        }
-                      ]
-                    }
-                  }
-                ]
-              }
-            ]
-          },
-          "gridPos": {
-            "h": 8,
-            "w": 24,
-            "x": 0,
-            "y": 30
-          },
-          "id": 101,
-          "options": {
-            "footer": {
-              "fields": "",
-              "reducer": [
-                "sum"
-              ],
-              "show": false
-            },
-            "showHeader": true
-          },
-          "pluginVersion": "8.3.3",
-          "targets": [
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${datasource}"
-              },
-              "exemplar": true,
-              "expr": "max(debezium_connector_currentscn{job=\"$job\", instance=~\".*$worker.*\", plugin=\"oracle\", context=\"streaming\"}) by (server) > 0",
-              "format": "table",
-              "interval": "",
-              "legendFormat": "",
-              "refId": "A"
-            },
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${datasource}"
-              },
-              "exemplar": true,
-              "expr": "max(debezium_connector_oldestscn{job=\"$job\", instance=~\".*$worker.*\", plugin=\"oracle\", context=\"streaming\"}) by (server) > 0",
-              "format": "table",
-              "hide": false,
-              "interval": "",
-              "legendFormat": "",
-              "refId": "B"
-            },
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${datasource}"
-              },
-              "exemplar": true,
-              "expr": "max(debezium_connector_committedscn{job=\"$job\", instance=~\".*$worker.*\", plugin=\"oracle\", context=\"streaming\"}) by (server) > 0",
-              "format": "table",
-              "hide": false,
-              "interval": "",
-              "legendFormat": "",
-              "refId": "C"
-            },
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${datasource}"
-              },
-              "exemplar": true,
-              "expr": "max(debezium_connector_offsetscn{job=\"$job\", instance=~\".*$worker.*\", plugin=\"oracle\", context=\"streaming\"}) by (server) > 0",
-              "format": "table",
-              "hide": false,
-              "interval": "",
-              "legendFormat": "",
-              "refId": "D"
-            },
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${datasource}"
-              },
-              "exemplar": true,
-              "expr": "max(debezium_connector_scnfreezecount{job=\"$job\", instance=~\".*$worker.*\", plugin=\"oracle\", context=\"streaming\"}) by (server)",
-              "format": "table",
-              "hide": false,
-              "interval": "",
-              "legendFormat": "",
-              "refId": "E"
-            }
-          ],
-          "title": "SCNs",
-          "transformations": [
-            {
-              "id": "seriesToColumns",
-              "options": {
-                "byField": "server"
-              }
-            },
-            {
-              "id": "organize",
-              "options": {
-                "excludeByName": {
-                  "Time 1": true,
-                  "Time 2": true,
-                  "Time 3": true,
-                  "Time 4": true,
-                  "Time 5": true,
-                  "Time 6": true,
-                  "Time 7": true
-                },
-                "indexByName": {},
-                "renameByName": {
-                  "Value #A": "Current SCN",
-                  "Value #B": "Oldest SCN",
-                  "Value #C": "Committed SCN",
-                  "Value #D": "Offset SCN",
-                  "Value #E": "SCN freezes N times",
-                  "server": "Server"
-                }
-              }
-            }
-          ],
-          "type": "table"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${datasource}"
-          },
-          "description": "Statistics of connector transaction buffers.",
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "mode": "thresholds"
-              },
-              "custom": {
-                "align": "auto",
-                "displayMode": "auto"
-              },
-              "mappings": [],
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "green"
-                  }
-                ]
-              }
-            },
-            "overrides": []
-          },
-          "gridPos": {
-            "h": 8,
-            "w": 24,
             "x": 0,
             "y": 38
           },
-          "id": 109,
-          "options": {
-            "footer": {
-              "fields": "",
-              "reducer": [
-                "sum"
-              ],
-              "show": false
-            },
-            "showHeader": true
-          },
-          "pluginVersion": "8.3.3",
-          "targets": [
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${datasource}"
-              },
-              "exemplar": true,
-              "expr": "max(debezium_connector_numberofactivetransactions{job=\"$job\", instance=~\".*$worker.*\", plugin=\"oracle\", context=\"streaming\"}) by (server)",
-              "format": "table",
-              "interval": "",
-              "legendFormat": "",
-              "refId": "A"
-            },
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${datasource}"
-              },
-              "exemplar": true,
-              "expr": "max(debezium_connector_numberofcommittedtransactions{job=\"$job\", instance=~\".*$worker.*\", plugin=\"oracle\", context=\"streaming\"}) by (server)",
-              "format": "table",
-              "hide": false,
-              "interval": "",
-              "legendFormat": "",
-              "refId": "B"
-            },
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${datasource}"
-              },
-              "exemplar": true,
-              "expr": "max(debezium_connector_numberofoversizedtransactions{job=\"$job\", instance=~\".*$worker.*\", plugin=\"oracle\", context=\"streaming\"}) by (server)",
-              "format": "table",
-              "hide": false,
-              "interval": "",
-              "legendFormat": "",
-              "refId": "C"
-            },
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${datasource}"
-              },
-              "exemplar": true,
-              "expr": "max(debezium_connector_numberofrolledbacktransactions{job=\"$job\", instance=~\".*$worker.*\", plugin=\"oracle\", context=\"streaming\"}) by (server)",
-              "format": "table",
-              "hide": false,
-              "interval": "",
-              "legendFormat": "",
-              "refId": "D"
-            },
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${datasource}"
-              },
-              "exemplar": true,
-              "expr": "max(debezium_connector_committhroughput{job=\"$job\", instance=~\".*$worker.*\", plugin=\"oracle\", context=\"streaming\"}) by (server)",
-              "format": "table",
-              "hide": false,
-              "interval": "",
-              "legendFormat": "",
-              "refId": "E"
-            }
-          ],
-          "title": "Transaction buffers",
-          "transformations": [
-            {
-              "id": "seriesToColumns",
-              "options": {
-                "byField": "server"
-              }
-            },
-            {
-              "id": "organize",
-              "options": {
-                "excludeByName": {
-                  "Time 1": true,
-                  "Time 2": true,
-                  "Time 3": true,
-                  "Time 4": true,
-                  "Time 5": true,
-                  "Time 6": true,
-                  "Time 7": true
-                },
-                "indexByName": {},
-                "renameByName": {
-                  "Value #A": "Active transactions",
-                  "Value #B": "Committed transactions",
-                  "Value #C": "Oversized transactions",
-                  "Value #D": "Rolledback transactions",
-                  "Value #E": "Commit throughput",
-                  "server": "Server"
-                }
-              }
-            }
-          ],
-          "type": "table"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${datasource}"
-          },
-          "description": "The time difference in milliseconds between when a change occurred in the transaction logs and when its added to the transaction buffer.",
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "mode": "palette-classic"
-              },
-              "custom": {
-                "axisLabel": "",
-                "axisPlacement": "auto",
-                "barAlignment": 0,
-                "drawStyle": "line",
-                "fillOpacity": 10,
-                "gradientMode": "none",
-                "hideFrom": {
-                  "legend": false,
-                  "tooltip": false,
-                  "viz": false
-                },
-                "lineInterpolation": "linear",
-                "lineWidth": 1,
-                "pointSize": 5,
-                "scaleDistribution": {
-                  "type": "linear"
-                },
-                "showPoints": "never",
-                "spanNulls": false,
-                "stacking": {
-                  "group": "A",
-                  "mode": "none"
-                },
-                "thresholdsStyle": {
-                  "mode": "off"
-                }
-              },
-              "mappings": [],
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "green"
-                  }
-                ]
-              },
-              "unit": "ms"
-            },
-            "overrides": []
-          },
-          "gridPos": {
-            "h": 8,
-            "w": 12,
-            "x": 0,
-            "y": 46
-          },
-          "id": 102,
+          "id": 70,
           "options": {
             "legend": {
               "calcs": [
@@ -5490,96 +5489,9 @@
                 "uid": "${datasource}"
               },
               "exemplar": true,
-              "expr": "max(debezium_connector_lagfromsourceinmilliseconds{job=\"$job\", instance=~\".*$worker.*\", plugin=\"oracle\", context=\"streaming\"}) by (server)",
+              "expr": "jvm_memory_bytes_used{area=\"heap\", job=\"$job\", instance=~\".*$worker.*\"}",
               "interval": "",
-              "legendFormat": "{{server}}",
-              "refId": "A"
-            }
-          ],
-          "title": "Lag from database in transaction buffer",
-          "type": "timeseries"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${datasource}"
-          },
-          "description": "The duration for processing the last LogMiner query batch results in milliseconds.",
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "mode": "palette-classic"
-              },
-              "custom": {
-                "axisLabel": "",
-                "axisPlacement": "auto",
-                "barAlignment": 0,
-                "drawStyle": "line",
-                "fillOpacity": 10,
-                "gradientMode": "none",
-                "hideFrom": {
-                  "legend": false,
-                  "tooltip": false,
-                  "viz": false
-                },
-                "lineInterpolation": "linear",
-                "lineWidth": 1,
-                "pointSize": 5,
-                "scaleDistribution": {
-                  "type": "linear"
-                },
-                "showPoints": "never",
-                "spanNulls": false,
-                "stacking": {
-                  "group": "A",
-                  "mode": "none"
-                },
-                "thresholdsStyle": {
-                  "mode": "off"
-                }
-              },
-              "mappings": [],
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "green"
-                  }
-                ]
-              },
-              "unit": "ms"
-            },
-            "overrides": []
-          },
-          "gridPos": {
-            "h": 8,
-            "w": 12,
-            "x": 12,
-            "y": 46
-          },
-          "id": 97,
-          "options": {
-            "legend": {
-              "calcs": [
-                "last"
-              ],
-              "displayMode": "table",
-              "placement": "bottom"
-            },
-            "tooltip": {
-              "mode": "single"
-            }
-          },
-          "targets": [
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${datasource}"
-              },
-              "exemplar": true,
-              "expr": "max(debezium_connector_millisecondtosleepbetweenminingquery{job=\"$job\", instance=~\".*$worker.*\", plugin=\"oracle\", context=\"streaming\"}) by (server)",
-              "interval": "",
-              "legendFormat": "sleep between mining query [server={{server}}]",
+              "legendFormat": "Used",
               "refId": "A"
             },
             {
@@ -5588,62 +5500,14 @@
                 "uid": "${datasource}"
               },
               "exemplar": true,
-              "expr": "max(debezium_connector_lastminingsessionstarttimeinmilliseconds{job=\"$job\", instance=~\".*$worker.*\", plugin=\"oracle\", context=\"streaming\"}) by (server)",
+              "expr": "jvm_memory_bytes_max{area=\"heap\", job=\"$job\", instance=~\".*$worker.*\"}",
               "hide": false,
               "interval": "",
-              "legendFormat": "start mining session [server={{server}}]",
+              "legendFormat": "Limit",
               "refId": "B"
-            },
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${datasource}"
-              },
-              "exemplar": true,
-              "expr": "max(debezium_connector_lastdurationoffetchqueryinmilliseconds{job=\"$job\", instance=~\".*$worker.*\", plugin=\"oracle\", context=\"streaming\"}) by (server)",
-              "hide": false,
-              "interval": "",
-              "legendFormat": "fetch query [server={{server}}]",
-              "refId": "C"
-            },
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${datasource}"
-              },
-              "exemplar": true,
-              "expr": "idelta(debezium_connector_totalresultsetnexttimeinmilliseconds{job=\"$job\", instance=~\".*$worker.*\", plugin=\"oracle\", context=\"streaming\"}[5m]) >= 0",
-              "hide": false,
-              "interval": "",
-              "legendFormat": "result set next [server={{server}}]",
-              "refId": "D"
-            },
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${datasource}"
-              },
-              "exemplar": true,
-              "expr": "max(debezium_connector_lastcommitdurationinmilliseconds{job=\"$job\", instance=~\".*$worker.*\", plugin=\"oracle\", context=\"streaming\"}) by (server)",
-              "hide": false,
-              "interval": "",
-              "legendFormat": "commit transaction [server={{server}}]",
-              "refId": "E"
-            },
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${datasource}"
-              },
-              "exemplar": true,
-              "expr": "max(debezium_connector_lastbatchprocessingtimeinmilliseconds{job=\"$job\", instance=~\".*$worker.*\", plugin=\"oracle\", context=\"streaming\"}) by (server)",
-              "hide": false,
-              "interval": "",
-              "legendFormat": "batch processing [server={{server}}]",
-              "refId": "F"
             }
           ],
-          "title": "Mining batch time",
+          "title": "Heap memory usage [$worker]",
           "type": "timeseries"
         },
         {
@@ -5651,7 +5515,7 @@
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "description": "The number of processed rows sent per second.",
+          "description": "The number of garbage collections triggered per second.",
           "fieldConfig": {
             "defaults": {
               "color": {
@@ -5701,10 +5565,97 @@
           "gridPos": {
             "h": 8,
             "w": 12,
+            "x": 12,
+            "y": 38
+          },
+          "id": 78,
+          "options": {
+            "legend": {
+              "calcs": [
+                "last"
+              ],
+              "displayMode": "table",
+              "placement": "bottom"
+            },
+            "tooltip": {
+              "mode": "single"
+            }
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${datasource}"
+              },
+              "exemplar": true,
+              "expr": "rate(jvm_gc_collection_seconds_count{job=\"$job\", instance=~\".*$worker.*\"}[5m])",
+              "interval": "",
+              "legendFormat": "{{gc}}",
+              "refId": "A"
+            }
+          ],
+          "title": "Garbage collections triggered per second [$worker]",
+          "type": "timeseries"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "description": "The information about JVM heap memory usage in percent (%).",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 10,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green"
+                  }
+                ]
+              },
+              "unit": "percent"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
             "x": 0,
-            "y": 54
+            "y": 46
           },
-          "id": 110,
+          "id": 73,
           "options": {
             "legend": {
               "calcs": [
@@ -5724,182 +5675,9 @@
                 "uid": "${datasource}"
               },
               "exemplar": true,
-              "expr": "rate(debezium_connector_totalprocessedrows{job=\"$job\", instance=~\".*$worker.*\", plugin=\"oracle\", context=\"streaming\"}[5m])",
+              "expr": "100 * jvm_memory_bytes_used{area=\"heap\", job=\"$job\", instance=~\".*$worker.*\"} / jvm_memory_bytes_max{area=\"heap\", job=\"$job\", instance=~\".*$worker.*\"}",
               "interval": "",
-              "legendFormat": "{{server}}",
-              "refId": "A"
-            }
-          ],
-          "title": "Processed rows per second",
-          "type": "timeseries"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${datasource}"
-          },
-          "description": "The number of entries fetched by the log mining query per database round-trip.",
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "mode": "palette-classic"
-              },
-              "custom": {
-                "axisLabel": "",
-                "axisPlacement": "auto",
-                "barAlignment": 0,
-                "drawStyle": "line",
-                "fillOpacity": 10,
-                "gradientMode": "none",
-                "hideFrom": {
-                  "legend": false,
-                  "tooltip": false,
-                  "viz": false
-                },
-                "lineInterpolation": "linear",
-                "lineWidth": 1,
-                "pointSize": 5,
-                "scaleDistribution": {
-                  "type": "linear"
-                },
-                "showPoints": "never",
-                "spanNulls": false,
-                "stacking": {
-                  "group": "A",
-                  "mode": "none"
-                },
-                "thresholdsStyle": {
-                  "mode": "off"
-                }
-              },
-              "mappings": [],
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "green"
-                  }
-                ]
-              }
-            },
-            "overrides": []
-          },
-          "gridPos": {
-            "h": 8,
-            "w": 12,
-            "x": 12,
-            "y": 54
-          },
-          "id": 99,
-          "options": {
-            "legend": {
-              "calcs": [
-                "last"
-              ],
-              "displayMode": "table",
-              "placement": "bottom"
-            },
-            "tooltip": {
-              "mode": "single"
-            }
-          },
-          "targets": [
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${datasource}"
-              },
-              "exemplar": true,
-              "expr": "max(debezium_connector_batchsize{job=\"$job\", instance=~\".*$worker.*\", plugin=\"oracle\", context=\"streaming\"}) by (server)",
-              "interval": "",
-              "legendFormat": "{{server}}",
-              "refId": "A"
-            }
-          ],
-          "title": "Mining batch size",
-          "type": "timeseries"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${datasource}"
-          },
-          "description": "The current mining session’s user/process global area (UGA/PGA) memory consumption in bytes.",
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "mode": "palette-classic"
-              },
-              "custom": {
-                "axisLabel": "",
-                "axisPlacement": "auto",
-                "barAlignment": 0,
-                "drawStyle": "line",
-                "fillOpacity": 10,
-                "gradientMode": "none",
-                "hideFrom": {
-                  "legend": false,
-                  "tooltip": false,
-                  "viz": false
-                },
-                "lineInterpolation": "linear",
-                "lineWidth": 1,
-                "pointSize": 5,
-                "scaleDistribution": {
-                  "type": "linear"
-                },
-                "showPoints": "never",
-                "spanNulls": false,
-                "stacking": {
-                  "group": "A",
-                  "mode": "none"
-                },
-                "thresholdsStyle": {
-                  "mode": "off"
-                }
-              },
-              "mappings": [],
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "green"
-                  }
-                ]
-              },
-              "unit": "bytes"
-            },
-            "overrides": []
-          },
-          "gridPos": {
-            "h": 8,
-            "w": 12,
-            "x": 12,
-            "y": 62
-          },
-          "id": 96,
-          "options": {
-            "legend": {
-              "calcs": [
-                "last"
-              ],
-              "displayMode": "table",
-              "placement": "bottom"
-            },
-            "tooltip": {
-              "mode": "single"
-            }
-          },
-          "targets": [
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${datasource}"
-              },
-              "exemplar": true,
-              "expr": "max(debezium_connector_miningsessionuserglobalareamemoryinbytes{job=\"$job\", instance=~\".*$worker.*\", plugin=\"oracle\", context=\"streaming\"}) by (server)",
-              "interval": "",
-              "legendFormat": "UGA: {{server}}",
+              "legendFormat": "Used",
               "refId": "A"
             },
             {
@@ -5908,18 +5686,106 @@
                 "uid": "${datasource}"
               },
               "exemplar": true,
-              "expr": "max(debezium_connector_miningsessionprocessglobalareamemoryinbytes{job=\"$job\", instance=~\".*$worker.*\", plugin=\"oracle\", context=\"streaming\"}) by (server)",
+              "expr": "100",
               "hide": false,
               "interval": "",
-              "legendFormat": "PGA: {{server}}",
+              "legendFormat": "Limit",
               "refId": "B"
             }
           ],
-          "title": "Mining session consumption",
+          "title": "Heap memory usage in percent [$worker]",
+          "type": "timeseries"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "description": "The time in seconds spent in garbage collection.",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 10,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green"
+                  }
+                ]
+              },
+              "unit": "s"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 12,
+            "y": 46
+          },
+          "id": 79,
+          "options": {
+            "legend": {
+              "calcs": [
+                "last"
+              ],
+              "displayMode": "table",
+              "placement": "bottom"
+            },
+            "tooltip": {
+              "mode": "single"
+            }
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${datasource}"
+              },
+              "exemplar": true,
+              "expr": "rate(jvm_gc_collection_seconds_sum{job=\"$job\", instance=~\".*$worker.*\"}[5m])",
+              "interval": "",
+              "legendFormat": "{{gc}}",
+              "refId": "A"
+            }
+          ],
+          "title": "Time spent in garbage collection [$worker]",
           "type": "timeseries"
         }
       ],
-      "title": "Debezium Oracle Connector",
+      "repeat": "worker",
+      "title": "Worker: $worker",
       "type": "row"
     }
   ],
@@ -6043,7 +5909,17 @@
     "from": "now-15m",
     "to": "now"
   },
-  "timepicker": {},
+  "timepicker": {
+    "refresh_intervals": [
+      "1m",
+      "5m",
+      "15m",
+      "30m",
+      "1h",
+      "2h",
+      "1d"
+    ]
+  },
   "timezone": "",
   "title": "Kafka Connect",
   "uid": "kzDw9MvIz",
