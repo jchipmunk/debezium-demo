@@ -1,0 +1,45 @@
+{
+  "version": "1.5.0",
+  "source": [
+    {
+      "alias": "SOURCE",
+      "name": "ORACLE",
+      "reader": {
+        "type": "online",
+        "user": "c##dbzuser",
+        "password": "dbz",
+        "server": "//oracle:1521/ORCLPDB1"
+      },
+      "format": {
+        "type": "json",
+        "column": 2,
+        "db": 3,
+        "interval-dts": 9,
+        "interval-ytm": 4,
+        "message": 2,
+        "rid": 1,
+        "schema": 7,
+        "scn-all": 1,
+        "timestamp-all": 1
+      },
+      "filter": {
+        "table": [
+          {
+            "owner": "C##DBZUSER",
+            "table": "SOURCE_DATA_TYPES"
+          }
+        ]
+      }
+    }
+  ],
+  "target": [
+    {
+      "alias": "DEBEZIUM",
+      "source": "SOURCE",
+      "writer": {
+        "type": "network",
+        "uri": "0.0.0.0:9000"
+      }
+    }
+  ]
+}

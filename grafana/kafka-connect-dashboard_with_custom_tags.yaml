@@ -24,8 +24,8 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 49,
-  "iteration": 1706082893604,
+  "id": 53,
+  "iteration": 1706119084913,
   "links": [],
   "liveNow": false,
   "panels": [
@@ -5273,7 +5273,7 @@
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "description": "Statistics of Oracle system change numbers.",
+          "description": "Information about Oracle system change numbers.",
           "fieldConfig": {
             "defaults": {
               "color": {
@@ -5807,18 +5807,6 @@
               "interval": "",
               "legendFormat": "batch processing [connector={{connector}}]",
               "refId": "E"
-            },
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${datasource}"
-              },
-              "exemplar": true,
-              "expr": "max(debezium_connector_lastcommitdurationinmilliseconds{job=\"$job\", instance=~\".*$worker.*\", plugin=\"oracle\", context=\"streaming\", connector=~\"$connector\"}) by (connector)",
-              "hide": false,
-              "interval": "",
-              "legendFormat": "commit transaction [connector={{connector}}]",
-              "refId": "F"
             }
           ],
           "title": "Mining batch time",
@@ -5829,7 +5817,7 @@
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "description": "The number of processed rows sent per second.",
+          "description": "The number of rows processed per second.",
           "fieldConfig": {
             "defaults": {
               "color": {

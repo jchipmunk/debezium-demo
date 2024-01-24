@@ -1,15 +1,16 @@
-version: '2.2'
+version: '2.4'
 name: 'debezium-demo'
 services:
   zookeeper:
-    image: quay.io/debezium/zookeeper:${DEBEZIUM_VERSION}
+    image: quay.io/debezium/zookeeper:2.5
     cpus: 0.2
     mem_limit: 512m
     mem_reservation: 512m
     ports:
       - 2181:2181
+
   kafka:
-    image: quay.io/debezium/kafka:${DEBEZIUM_VERSION}
+    image: quay.io/debezium/kafka:2.5
     cpus: 0.5
     mem_limit: 1024m
     mem_reservation: 768m
@@ -18,20 +19,22 @@ services:
     environment:
       - ZOOKEEPER_CONNECT=zookeeper:2181
       - KAFKA_HEAP_OPTS=-Xms256m -Xmx512m
-  schema-registry:
-    image: confluentinc/cp-schema-registry:7.5.3
-    cpus: 0.2
-    mem_limit: 512m
-    mem_reservation: 512m
-    links:
-      - kafka
-    ports:
-      - 8081:8081
-    environment:
-      SCHEMA_REGISTRY_HOST_NAME: schema-registry
-      SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: PLAINTEXT://kafka:9092
+
+#  schema-registry:
+#    image: confluentinc/cp-schema-registry:7.5.3
+#    cpus: 0.2
+#    mem_limit: 512m
+#    mem_reservation: 512m
+#    depends_on:
+#      - kafka
+#    ports:
+#      - 8081:8081
+#    environment:
+#      SCHEMA_REGISTRY_HOST_NAME: schema-registry
+#      SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: PLAINTEXT://kafka:9092
+
 #  postgres:
-#    image: quay.io/debezium/postgres:15
+#    image: quay.io/debezium/postgres:16
 #    ports:
 #      - 5432:5432
 #    environment:
@@ -42,24 +45,44 @@ services:
 #    ports:
 #      - 27017:27017
 #    entrypoint: [ '/usr/bin/mongod', '--replSet', 'rs0', '--bind_ip_all' ]
+
   oracle:
     image: oracle/database:19.3.0-ee
-    cpus: 1.5
-    mem_limit: 4096m
+    cpus: 2
+    mem_limit: 5120m
     mem_reservation: 2048m
+    shm_size: 2gb
     ports:
       - 1521:1521
     environment:
       - ORACLE_SID=orclcdb
       - ORACLE_PDB=orclpdb1
-      - ORACLE_PWD=orcl
+      - ORACLE_PWD=top_secret
     volumes:
-      - ./scripts/startup:/opt/oracle/scripts/startup
+      - ./oradata:/opt/oracle/oradata
+      - ./startup:/opt/oracle/scripts/startup
+
+  olr:
+    image: bersler/openlogreplicator:debian-12.0
+    cpus: 0.5
+    mem_limit: 512m
+    mem_reservation: 512m
+    shm_size: 2gb
+    platform: linux/amd64
+    ports:
+      - 9000:9000
+    depends_on:
+      - oracle
+    volumes:
+      - ./checkpoint:/opt/OpenLogReplicator/checkpoint
+      - ./oradata:/opt/oracle/oradata
+      - ./scripts:/opt/OpenLogReplicator/scripts
+
   connect:
     build:
       context: connect
       args:
-        DEBEZIUM_VERSION: ${DEBEZIUM_VERSION}
+        DEBEZIUM_VERSION: 2.5
         JMX_AGENT_VERSION: 0.20.0
         METRICS_PORT: 8082
     cpus: 0.5
@@ -71,6 +94,9 @@ services:
       - 1505:1505
     depends_on:
       - kafka
+      - oracle
+      - olr
+#      - schema-registry
     environment:
       - BOOTSTRAP_SERVERS=kafka:9092
       - GROUP_ID=connect
@@ -78,10 +104,7 @@ services:
       - OFFSET_STORAGE_TOPIC=connect_offsets
       - STATUS_STORAGE_TOPIC=connect_statuses
       - KAFKA_HEAP_OPTS=-Xms256m -Xmx512m -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:1505
-    volumes:
-      - ./confluentinc-kafka-connect-jdbc:/kafka/connect/confluentinc-kafka-connect-jdbc
-      - ./jdbc-connector-for-apache-kafka:/kafka/connect/jdbc-connector-for-apache-kafka
-#      - ./debezium-connector-oracle:/kafka/connect/debezium-connector-oracle
+
   kafka-ui:
     image: provectuslabs/kafka-ui:latest
     cpus: 0.5
@@ -92,38 +115,40 @@ services:
     depends_on:
       - kafka
       - connect
+#      - schema-registry
     environment:
       - KAFKA_CLUSTERS_0_NAME=local
       - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=kafka:9092
+#      - KAFKA_CLUSTERS_0_SCHEMAREGISTRY=http://schema-registry:8081
       - KAFKA_CLUSTERS_0_KAFKACONNECT_0_NAME=local
       - KAFKA_CLUSTERS_0_KAFKACONNECT_0_ADDRESS=http://connect:8083
-  prometheus:
-    image: prom/prometheus:v2.37.6
-    cpus: 0.5
-    mem_limit: 1024m
-    mem_reservation: 512m
-    ports:
-      - 9090:9090
-    links:
-      - connect
-    command:
-      - '--web.console.templates=/etc/prometheus/consoles'
-      - '--web.console.libraries=/etc/prometheus/console_libraries'
-      - '--config.file=/etc/prometheus/prometheus.yml'
-      - '--storage.tsdb.path=/prometheus'
-      - '--storage.tsdb.retention.time=24h'
-      - '--web.enable-lifecycle'
-      - '--storage.tsdb.no-lockfile'
-      - '--web.route-prefix=/'
-    volumes:
-      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
-  grafana:
-    image: grafana/grafana:8.3.3
-    cpus: 0.5
-    mem_limit: 1024m
-    mem_reservation: 512m
-    ports:
-      - 3000:3000
-    user: "0"
-    volumes:
-      - ./grafana/:/etc/grafana/provisioning/
+
+#  prometheus:
+#    image: prom/prometheus:v2.37.6
+#    cpus: 0.5
+#    mem_limit: 1024m
+#    mem_reservation: 512m
+#    ports:
+#      - 9090:9090
+#    command:
+#      - '--web.console.templates=/etc/prometheus/consoles'
+#      - '--web.console.libraries=/etc/prometheus/console_libraries'
+#      - '--config.file=/etc/prometheus/prometheus.yml'
+#      - '--storage.tsdb.path=/prometheus'
+#      - '--storage.tsdb.retention.time=24h'
+#      - '--web.enable-lifecycle'
+#      - '--storage.tsdb.no-lockfile'
+#      - '--web.route-prefix=/'
+#    volumes:
+#      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+
+#  grafana:
+#    image: grafana/grafana:8.3.3
+#    cpus: 0.5
+#    mem_limit: 1024m
+#    mem_reservation: 512m
+#    ports:
+#      - 3000:3000
+#    user: "0"
+#    volumes:
+#      - ./grafana:/etc/grafana/provisioning
