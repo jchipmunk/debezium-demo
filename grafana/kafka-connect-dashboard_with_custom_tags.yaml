@@ -24,8 +24,8 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 45,
-  "iteration": 1706080933822,
+  "id": 49,
+  "iteration": 1706082893604,
   "links": [],
   "liveNow": false,
   "panels": [
@@ -5470,20 +5470,7 @@
                 ]
               }
             },
-            "overrides": [
-              {
-                "matcher": {
-                  "id": "byName",
-                  "options": "Commit duration"
-                },
-                "properties": [
-                  {
-                    "id": "unit",
-                    "value": "ms"
-                  }
-                ]
-              }
-            ]
+            "overrides": []
           },
           "gridPos": {
             "h": 8,
@@ -5567,19 +5554,6 @@
               "interval": "",
               "legendFormat": "",
               "refId": "E"
-            },
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${datasource}"
-              },
-              "exemplar": true,
-              "expr": "max(debezium_connector_lastcommitdurationinmilliseconds{job=\"$job\", instance=~\".*$worker.*\", plugin=\"oracle\", context=\"streaming\", connector=~\"$connector\"}) by (connector)",
-              "format": "table",
-              "hide": false,
-              "interval": "",
-              "legendFormat": "",
-              "refId": "F"
             }
           ],
           "title": "Transaction buffers",
@@ -5609,7 +5583,6 @@
                   "Value #C": "Oversized transactions",
                   "Value #D": "Rolledback transactions",
                   "Value #E": "Commit throughput",
-                  "Value #F": "Commit duration",
                   "connector": "Connector"
                 }
               }
@@ -5817,7 +5790,7 @@
                 "uid": "${datasource}"
               },
               "exemplar": true,
-              "expr": "idelta(debezium_connector_totalresultsetnexttimeinmilliseconds{job=\"$job\", instance=~\".*$worker.*\", plugin=\"oracle\", context=\"streaming\", connector=~\"$connector\"}[5m])",
+              "expr": "idelta(debezium_connector_totalresultsetnexttimeinmilliseconds{job=\"$job\", instance=~\".*$worker.*\", plugin=\"oracle\", context=\"streaming\", connector=~\"$connector\"}[5m]) >= 0",
               "hide": false,
               "interval": "",
               "legendFormat": "result set next [connector={{connector}}]",
@@ -5834,6 +5807,18 @@
               "interval": "",
               "legendFormat": "batch processing [connector={{connector}}]",
               "refId": "E"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${datasource}"
+              },
+              "exemplar": true,
+              "expr": "max(debezium_connector_lastcommitdurationinmilliseconds{job=\"$job\", instance=~\".*$worker.*\", plugin=\"oracle\", context=\"streaming\", connector=~\"$connector\"}) by (connector)",
+              "hide": false,
+              "interval": "",
+              "legendFormat": "commit transaction [connector={{connector}}]",
+              "refId": "F"
             }
           ],
           "title": "Mining batch time",
